@@ -1,13 +1,12 @@
 import streamlit as st
 import torchaudio
+import tempfile
+import os
+import torch
+
 from zonos.model import Zonos
 from zonos.conditioning import make_cond_dict
 from zonos.utils import DEFAULT_DEVICE as device
-import tempfile
-import os
-
-# Load Zonos Model
-st.session_state["model"] = Zonos.from_pretrained("Zyphra/Zonos-v0.1-transformer", device=device)
 
 # Streamlit UI
 st.title("🎙️ AI Voice Cloning & Enhancement")
@@ -40,6 +39,10 @@ def process_audio(uploaded_file):
     return None
 
 if st.button("Generate Cloned Voice") and uploaded_file and text_input:
+    # Load model only when needed
+    if "model" not in st.session_state:
+        st.session_state["model"] = Zonos.from_pretrained("Zyphra/Zonos-v0.1-transformer", device=device)
+    
     audio_path = process_audio(uploaded_file)
     wav, sr = torchaudio.load(audio_path)
     speaker = st.session_state["model"].make_speaker_embedding(wav, sr)
