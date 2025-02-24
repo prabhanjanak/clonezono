@@ -1,4 +1,4 @@
-streamlit
+git+https://github.com/Zyphra/zonos.git
 torch
 torchaudio
-git+https://github.com/Zyphra/zonos.git
+streamlit
